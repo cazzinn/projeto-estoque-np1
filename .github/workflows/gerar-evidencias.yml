@@ -1,0 +1,108 @@
+name: Gerar evidencias reais
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  capturar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Baixar projeto
+        uses: actions/checkout@v4
+
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Instalar navegador de testes
+        run: |
+          npm install playwright
+          npx playwright install --with-deps chromium
+
+      - name: Iniciar sistema
+        run: |
+          python app.py > servidor.log 2>&1 &
+          for i in {1..30}; do
+            if curl --silent http://127.0.0.1:8000 > /dev/null; then
+              exit 0
+            fi
+            sleep 1
+          done
+          cat servidor.log
+          exit 1
+
+      - name: Capturar evidencias
+        run: |
+          mkdir -p evidencias
+          node <<'NODE'
+          const { chromium } = require('playwright');
+
+          (async () => {
+            const browser = await chromium.launch({ headless: true });
+            const context = await browser.newContext({
+              viewport: { width: 1440, height: 900 },
+              deviceScaleFactor: 1
+            });
+            const page = await context.newPage();
+
+            await page.goto('http://127.0.0.1:8000', { waitUntil: 'networkidle' });
+            await page.screenshot({ path: 'evidencias/01-tela-inicial.png', fullPage: true });
+
+            await page.fill('#nome', 'Detergente 500 ml');
+            await page.fill('#quantidade', '20');
+            await page.fill('#preco', '3.99');
+            await page.selectOption('#categoria', '3');
+            await Promise.all([
+              page.waitForResponse(r => r.request().method() === 'POST' && r.url().endsWith('/api/produtos')),
+              page.click('button[type="submit"]')
+            ]);
+            await page.waitForFunction(() => document.querySelector('#mensagem').textContent.includes('cadastrado'));
+            await page.waitForTimeout(300);
+            await page.screenshot({ path: 'evidencias/02-produto-cadastrado.png', fullPage: true });
+
+            let linha = page.locator('#lista-produtos tr').filter({ hasText: 'Detergente 500 ml' });
+            await linha.getByRole('button', { name: 'Editar' }).click();
+            await page.fill('#quantidade', '25');
+            await Promise.all([
+              page.waitForResponse(r => r.request().method() === 'PUT'),
+              page.click('button[type="submit"]')
+            ]);
+            await page.waitForFunction(() => document.querySelector('#mensagem').textContent.includes('atualizado'));
+            await page.waitForTimeout(300);
+            await page.screenshot({ path: 'evidencias/03-produto-editado.png', fullPage: true });
+
+            const api = await context.newPage();
+            await api.goto('http://127.0.0.1:8000/api/produtos', { waitUntil: 'networkidle' });
+            await api.screenshot({ path: 'evidencias/04-persistencia-no-banco.png', fullPage: true });
+            await api.close();
+
+            linha = page.locator('#lista-produtos tr').filter({ hasText: 'Detergente 500 ml' });
+            page.once('dialog', dialog => dialog.accept());
+            await Promise.all([
+              page.waitForResponse(r => r.request().method() === 'DELETE'),
+              linha.getByRole('button', { name: 'Excluir' }).click()
+            ]);
+            await page.waitForFunction(() => document.querySelector('#mensagem').textContent.includes('excluído'));
+            await page.waitForTimeout(300);
+            await page.screenshot({ path: 'evidencias/05-produto-excluido.png', fullPage: true });
+
+            await browser.close();
+          })();
+          NODE
+
+      - name: Disponibilizar imagens
+        uses: actions/upload-artifact@v4
+        with:
+          name: evidencias-sistema
+          path: evidencias
