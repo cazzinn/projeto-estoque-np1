@@ -1,0 +1,25 @@
+* { box-sizing: border-box; }
+body { margin: 0; font-family: Arial, sans-serif; background: #f1f5f9; color: #1e293b; }
+header { background: #1d4ed8; color: white; padding: 24px; text-align: center; }
+header h1 { margin: 0 0 5px; }
+header p { margin: 0; }
+main { max-width: 1050px; margin: 25px auto; padding: 0 15px; display: grid; grid-template-columns: 340px 1fr; gap: 20px; }
+.painel { background: white; padding: 22px; border-radius: 8px; box-shadow: 0 2px 8px #00000018; }
+h2 { margin-top: 0; font-size: 20px; }
+label { display: block; margin: 12px 0 5px; font-weight: bold; }
+input, select { width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 5px; }
+.linha { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.acoes-formulario { display: flex; gap: 8px; margin-top: 16px; }
+button { border: 0; border-radius: 5px; padding: 9px 12px; background: #2563eb; color: white; cursor: pointer; }
+button:hover { opacity: .85; }
+.secundario { background: #64748b; display: none; }
+.excluir { background: #dc2626; }
+.editar { background: #f59e0b; }
+#mensagem { min-height: 20px; color: #15803d; }
+.tabela-container { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; }
+th, td { padding: 11px 8px; border-bottom: 1px solid #e2e8f0; text-align: left; }
+th { background: #eff6ff; }
+td button { margin: 2px; }
+@media (max-width: 800px) { main { grid-template-columns: 1fr; } }
+

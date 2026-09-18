@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Controle de Estoque</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>Controle de Estoque</h1>
+        <p>Cadastro simples de produtos</p>
+    </header>
+
+    <main>
+        <section class="painel">
+            <h2 id="titulo-formulario">Cadastrar produto</h2>
+            <form id="formulario">
+                <input type="hidden" id="produto-id">
+                <label for="nome">Nome</label>
+                <input id="nome" maxlength="100" required>
+
+                <div class="linha">
+                    <div>
+                        <label for="quantidade">Quantidade</label>
+                        <input id="quantidade" type="number" min="0" required>
+                    </div>
+                    <div>
+                        <label for="preco">Preço (R$)</label>
+                        <input id="preco" type="number" min="0" step="0.01" required>
+                    </div>
+                </div>
+
+                <label for="categoria">Categoria</label>
+                <select id="categoria" required></select>
+
+                <div class="acoes-formulario">
+                    <button type="submit">Salvar</button>
+                    <button type="button" id="cancelar" class="secundario">Cancelar edição</button>
+                </div>
+            </form>
+            <p id="mensagem"></p>
+        </section>
+
+        <section class="painel tabela-painel">
+            <h2>Produtos cadastrados</h2>
+            <div class="tabela-container">
+                <table>
+                    <thead>
+                        <tr><th>ID</th><th>Produto</th><th>Categoria</th><th>Qtd.</th><th>Preço</th><th>Ações</th></tr>
+                    </thead>
+                    <tbody id="lista-produtos"></tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+    <script src="script.js"></script>
+</body>
+</html>
+
