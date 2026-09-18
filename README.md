@@ -85,3 +85,37 @@ O banco `estoque.db` é criado automaticamente na primeira execução. Não é n
 - `index.html`: estrutura da interface.
 - `style.css`: aparência e responsividade.
 - `script.js`: ações da página e comunicação com o servidor.
+
+## 8. Evidências visuais
+
+As imagens abaixo foram obtidas durante uma execução real do sistema, utilizando o banco SQLite e as operações CRUD.
+
+### Tela inicial
+
+Produtos iniciais carregados do banco de dados.
+
+![Tela inicial do sistema](evidencias/01-tela-inicial.png)
+
+### Cadastro de produto
+
+Cadastro do produto "Detergente 500 ml" com 20 unidades.
+
+![Produto cadastrado](evidencias/02-produto-cadastrado.png)
+
+### Atualização de produto
+
+Quantidade do detergente atualizada de 20 para 25 unidades.
+
+![Produto atualizado](evidencias/03-produto-editado.png)
+
+### Persistência no banco de dados
+
+Consulta da API após a atualização, mostrando o produto armazenado com 25 unidades.
+
+![Dados persistidos no banco](evidencias/04-persistencia-no-banco.png)
+
+### Exclusão de produto
+
+Produto removido e lista retornando aos registros iniciais.
+
+![Produto excluído](evidencias/05-produto-excluido.png)
