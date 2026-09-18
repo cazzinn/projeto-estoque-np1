@@ -2,6 +2,9 @@ name: Gerar evidencias reais
 
 on:
   workflow_dispatch:
+  push:
+    paths:
+      - ".github/workflows/gerar-evidencias.yml"
 
 permissions:
   contents: read
